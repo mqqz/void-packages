@@ -1,0 +1,35 @@
+# Template file for 'apycula'
+pkgname=apycula
+version=0.32
+revision=1
+build_style=fetch
+hostmakedepends="python3-installer"
+depends="python3-apycula>=${version}_${revision}"
+short_desc="Open source tools for Gowin FPGAs"
+maintainer="Mohamad Alsadhan <mo@sdhn.cc>"
+license="MIT"
+homepage="https://github.com/YosysHQ/apicula"
+distfiles="${PYPI_SITE/\/source}/py3/A/Apycula/Apycula-${version}-py3-none-any.whl>apycula-${version}.zip"
+checksum=9842eef0bb54d316f7a75d883d19bf042ed423c0c6f5d5f078c64e0c9e5f9c51
+skip_extraction="apycula-${version}.zip"
+
+do_install() {
+	local _wheel="${wrksrc}/Apycula-${version}-py3-none-any.whl"
+
+	mkdir -p "${wrksrc}"
+	cp "${XBPS_SRCDISTDIR}/${pkgname}-${version}/apycula-${version}.zip" "${_wheel}"
+	python3 -m installer --overwrite-existing --destdir "${DESTDIR}" "${_wheel}"
+}
+
+post_install() {
+	vlicense "${DESTDIR}/${py3_sitelib}/apycula-${version}.dist-info/licenses/LICENSE"
+}
+
+python3-apycula_package() {
+	short_desc+=" - Python module"
+	depends="python3-fastcrc>=0 python3-msgspec>=0 python3-numpy>=0"
+	pkg_install() {
+		vmove ${py3_sitelib}
+		vlicense "${PKGDESTDIR}/${py3_sitelib}/apycula-${version}.dist-info/licenses/LICENSE"
+	}
+}

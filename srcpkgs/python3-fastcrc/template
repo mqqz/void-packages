@@ -1,0 +1,20 @@
+# Template file for 'python3-fastcrc'
+pkgname=python3-fastcrc
+version=0.3.5
+revision=1
+build_style=python3-pep517
+build_helper="rust"
+hostmakedepends="cargo maturin"
+makedepends="python3-devel rust-std"
+depends="python3"
+short_desc="Hyper-fast Python module for computing CRC checksums"
+maintainer="Mohamad Alsadhan <mo@sdhn.cc>"
+license="MIT"
+homepage="https://github.com/overcat/fastcrc"
+distfiles="${PYPI_SITE}/f/fastcrc/fastcrc-${version}.tar.gz"
+checksum=3705cbad6b3f283a04256f97ae899404794395090ff5966eac79fe303c13e93e
+make_check=no # No upstream test suite is shipped in the source distribution.
+
+post_install() {
+	vlicense LICENSE
+}

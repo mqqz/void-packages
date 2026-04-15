@@ -1,0 +1,37 @@
+# Template file for 'nextpnr'
+pkgname=nextpnr
+version=0.10
+revision=1
+build_style=cmake
+configure_args="
+ -DARCH=himbaechel
+ -DHIMBAECHEL_UARCH=gowin
+ -DBUILD_GUI=OFF
+ -DBUILD_PYTHON=OFF
+ -DBUILD_RUST=OFF
+ -DBUILD_TESTS=OFF"
+hostmakedepends="python3 python3-apycula"
+makedepends="boost-devel-minimal libboost_iostreams libboost_program_options
+ libboost_thread eigen"
+short_desc="Portable FPGA place-and-route tool (himbaechel/gowin build)"
+maintainer="Mohamad Alsadhan <mo@sdhn.cc>"
+license="ISC"
+homepage="https://github.com/YosysHQ/nextpnr"
+distfiles="https://github.com/YosysHQ/nextpnr/archive/refs/tags/nextpnr-${version}.tar.gz>nextpnr-${version}.tar.gz"
+checksum=374393094cdf7b2aae415cebf0994840b4a355bb95e89c683ef19f95f0b14dc2
+make_check=no # Requested build disables upstream tests.
+
+pre_configure() {
+	# Gowin chipdb generation imports the external Apycula Python module.
+	python3 -c 'import apycula' >/dev/null 2>&1 || {
+		echo >&2 "nextpnr: missing Python module 'apycula' required for"
+		echo >&2 "nextpnr himbaechel/gowin chipdb generation."
+		echo >&2 "Install the host dependency package 'python3-apycula'."
+		return 1
+	}
+}
+
+post_install() {
+	vlicense COPYING
+	vdoc README.md
+}
