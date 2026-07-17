@@ -1,0 +1,39 @@
+# Template file for 'quarto'
+pkgname=quarto
+version=1.9.38
+revision=1
+archs="x86_64 aarch64"
+depends="bash unzip which xz"
+short_desc="Scientific and technical publishing system"
+maintainer="Mohamad Alsadhan <mo@sdhn.cc>"
+license="MIT"
+homepage="https://quarto.org"
+nostrip_files="sass.snapshot"
+
+case "$XBPS_TARGET_MACHINE" in
+	x86_64)
+		_dist_arch=amd64
+		checksum=ea8c897368791ad9f200010c087ea3111b2e556b12a960487dd4e216902aa102
+		;;
+	aarch64)
+		_dist_arch=arm64
+		checksum=75fbc5c1121ffe65e564e9d24711db2ad8f617f9552f5dc7d8a06307d72dde38
+		;;
+esac
+
+distfiles="https://github.com/quarto-dev/quarto-cli/releases/download/v${version}/quarto-${version}-linux-${_dist_arch}.tar.gz"
+
+do_install() {
+	vmkdir usr/lib/quarto
+	vcopy bin usr/lib/quarto
+	vcopy share usr/lib/quarto
+
+	vmkdir usr/bin
+	ln -s /usr/lib/quarto/bin/quarto "${DESTDIR}/usr/bin/quarto"
+
+	vman share/man/quarto-man.man quarto.1
+	vlicense share/COPYING.md
+	vlicense bin/tools/${XBPS_TARGET_MACHINE}/dart-sass/src/LICENSE \
+	 dart-sass-LICENSE
+	rm -rf "${DESTDIR}/usr/lib/quarto/share/man"
+}
